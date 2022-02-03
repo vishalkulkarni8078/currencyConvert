@@ -38,7 +38,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> errorCode(String errorCode){
         return ApiResponse.<T>builder()
                 .success(false)
-                .errorResponse(ErrorResponse.builder().code(errorCode).build()).build();
+                .errorResponse(ErrorResponse.builder().referenceCode(errorCode).build()).build();
     }
 
     /**

@@ -12,10 +12,10 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class APISuccessDTO {
+public class TimeSeriesDTO {
     private Boolean success;
     private BigInteger timestamp;
     private String base;
     private String date;
-    private Map<String,Double> rates;
+    private Map<String,Map<String,Double>> rates;
 }

@@ -1,25 +1,16 @@
 package com.crewmeister.cmcodingchallenge.controller;
 
 
-import com.crewmeister.cmcodingchallenge.configuration.CustomException;
-import com.crewmeister.cmcodingchallenge.configuration.ResponseExceptionHandler;
 import com.crewmeister.cmcodingchallenge.dto.ApiResponse;
-import com.crewmeister.cmcodingchallenge.dto.ErrorResponse;
+import com.crewmeister.cmcodingchallenge.dto.DateRateDTO;
 import com.crewmeister.cmcodingchallenge.services.CurrencyService;
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/exchangeRate")
@@ -33,6 +24,18 @@ public class ExchangeRateController {
     public ResponseEntity<ApiResponse<Set<String>>> getAvailableCurrencies() {
         Set<String> availableCurrencies=currencyService.getAvailableCurrencies();
         return new ResponseEntity<>(ApiResponse.success(availableCurrencies), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAvailableRates")
+    public ResponseEntity<ApiResponse<Map<String, Map<String, Double>>>> getAvailableExchangeRates() {
+        Map<String, Map<String, Double>> availableExchangeRates=currencyService.getAvailableExchangeRates();
+        return new ResponseEntity<>(ApiResponse.success(availableExchangeRates), HttpStatus.OK);
+    }
+
+    @GetMapping("/getRate/{date}")
+    public ResponseEntity<ApiResponse<DateRateDTO>> getRateForDate(@PathVariable String date){
+        DateRateDTO dateRateDTO=currencyService.getRateForGivenDate(date);
+        return new ResponseEntity<>(ApiResponse.success(dateRateDTO), HttpStatus.OK);
     }
 
 }

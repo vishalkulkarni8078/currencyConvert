@@ -29,7 +29,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
         String errorReference = UUID.randomUUID().toString().substring(0,8).toUpperCase();
         //logging error
         logError(ex, errorReference);
-        return new ResponseEntity<>(ApiResponse.error(ErrorResponse.builder().referenceCode(errorReference).message(ex.getMessage()+"Kindly quote reference code while contacting.").build()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ApiResponse.error(ErrorResponse.builder().referenceCode(errorReference).message(ex.getMessage()).build()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void logError(Exception ex, String reference){
