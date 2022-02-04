@@ -1,10 +1,7 @@
 package com.crewmeister.cmcodingchallenge.services;
 
 import com.crewmeister.cmcodingchallenge.configuration.CustomException;
-import com.crewmeister.cmcodingchallenge.dto.APIErrorDTO;
-import com.crewmeister.cmcodingchallenge.dto.DateRateDTO;
-import com.crewmeister.cmcodingchallenge.dto.LatestRatesDTO;
-import com.crewmeister.cmcodingchallenge.dto.TimeSeriesDTO;
+import com.crewmeister.cmcodingchallenge.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.validator.GenericValidator;
@@ -111,7 +108,53 @@ public class CurrencyService {
         }
     }
 
+    public ConvertResponseDTO getConvertedAmount(ConvertRequestDTO convertRequestDTO) {
+        StringBuilder builder=new StringBuilder();
+        builder.append(baseUri)
+                .append("convert")
+                .append("?access_key=")
+                .append(accessKey)
+                .append("&from=")
+                .append(convertRequestDTO.getCurrency())
+                .append("&to=")
+                .append("EUR")
+                .append("&amount=")
+                .append(convertRequestDTO.getAmount());
+        if(convertRequestDTO.getDate()!=null){
+            builder.append("&date=")
+                    .append(convertRequestDTO.getDate());
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .GET()
+                    .header("Content-type","application/json")
+                    .uri(URI.create(builder.toString()))
+                    .build();
+            HttpResponse<String> response = HttpClient.newBuilder().build()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+            if(response.statusCode()==200){
+                ConvertAPIDTO convertAPIDTO= objectMapper.readValue(response.body(), ConvertAPIDTO.class);
+                return ConvertResponseDTO.builder()
+                        .convertedAmount(convertAPIDTO.getResult())
+                        .date(convertAPIDTO.getDate())
+                        .rate(convertAPIDTO.getInfo().get("rate"))
+                        .from(convertAPIDTO.getQuery().get("from"))
+                        .to(convertAPIDTO.getQuery().get("to"))
+                        .actualAmount((convertAPIDTO.getQuery().get("amount")))
+                        .build();
+            }else {
+                APIErrorDTO apiErrorDTO=objectMapper.readValue(response.body(), APIErrorDTO.class);
+                throw new CustomException(String.format("[API Error: %s]Error Code: %s Message: %s ", response.statusCode(),apiErrorDTO.getError().get("code"),apiErrorDTO.getError().get("message")));
+            }
+        }catch (Exception e){
+            throw new CustomException(e.getMessage());
+        }
+
+    }
+
     private boolean validateDate(String date){
        return GenericValidator.isDate(date, "yyyy-MM-dd", true);
     }
+
+
 }

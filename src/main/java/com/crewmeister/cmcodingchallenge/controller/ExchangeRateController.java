@@ -2,6 +2,8 @@ package com.crewmeister.cmcodingchallenge.controller;
 
 
 import com.crewmeister.cmcodingchallenge.dto.ApiResponse;
+import com.crewmeister.cmcodingchallenge.dto.ConvertRequestDTO;
+import com.crewmeister.cmcodingchallenge.dto.ConvertResponseDTO;
 import com.crewmeister.cmcodingchallenge.dto.DateRateDTO;
 import com.crewmeister.cmcodingchallenge.services.CurrencyService;
 import lombok.extern.apachecommons.CommonsLog;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -36,6 +39,12 @@ public class ExchangeRateController {
     public ResponseEntity<ApiResponse<DateRateDTO>> getRateForDate(@PathVariable String date){
         DateRateDTO dateRateDTO=currencyService.getRateForGivenDate(date);
         return new ResponseEntity<>(ApiResponse.success(dateRateDTO), HttpStatus.OK);
+    }
+
+    @PostMapping("/getAmount")
+    public ResponseEntity<ApiResponse<ConvertResponseDTO>> convertAmount(@RequestBody @Valid ConvertRequestDTO convertRequestDTO){
+        ConvertResponseDTO convertedAmount=currencyService.getConvertedAmount(convertRequestDTO);
+        return new ResponseEntity<>(ApiResponse.success(convertedAmount), HttpStatus.OK);
     }
 
 }

@@ -2,7 +2,6 @@
 
 ## Intro
 
-## The Challenge
 
  
 ## Setup
