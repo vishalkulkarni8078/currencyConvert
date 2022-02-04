@@ -1,7 +1,9 @@
 # Crewmeister Test Assignment - Vishal Ravindra Kulkarni
 
 ## Intro
+A foreign exchange rate service as SpringBoot-based microservice.
 
+Exchange Rate API: https://manage.exchangeratesapi.io
 
  
 ## Setup
@@ -10,13 +12,9 @@
 - Maven 3.x
 
 ````shell script
+mvn clean install
 mvn spring-boot:run
 ````
 
-After running, the project, switch to your browser and hit http://localhost:8080/api/currencies. You should see some 
-demo output. 
-
-
-[1] https://start.spring.io/
-
-[2] https://www.bundesbank.de/dynamic/action/en/statistics/time-series-databases/time-series-databases/759784/759784?listId=www_s331_b01012_3
+After running, the project, switch to your browser and hit http://localhost:8080/currencies/swagger-ui.html.
+You should see all information related to all API's 

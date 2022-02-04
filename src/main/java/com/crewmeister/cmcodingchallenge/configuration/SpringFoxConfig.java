@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -23,12 +25,12 @@ import java.util.stream.Collectors;
 
 @EnableSwagger2
 @Configuration
-public class SpringFoxConfig {
+public class SpringFoxConfig implements WebMvcConfigurer {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build().apiInfo(getApiInfo());
     }
@@ -39,12 +41,22 @@ public class SpringFoxConfig {
                 "A foreign exchange rate service as SpringBoot-based microservice.",
                 "1",
                 "",
-                new Contact("Vishal","URL","vishal.kulkarni8078@gmail.com"),
+                new Contact("Vishal", "URL", "vishal.kulkarni8078@gmail.com"),
                 "",
                 "",
                 Collections.emptyList()
         );
     }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+
 
     @Bean
     public static BeanPostProcessor springfoxHandlerProviderBeanPostProcessor() {
